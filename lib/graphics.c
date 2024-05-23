@@ -79,3 +79,4 @@ void point_drawf(Point *p, Image *src, FPixel c) {
 void point_print(Point *p, FILE *fp) {
     fprintf(fp, "Point: (%f, %f, %f, %f)\n", p->val[0], p->val[1], p->val[2], p->val[3]);
 }
+
