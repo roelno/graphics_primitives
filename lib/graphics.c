@@ -3,31 +3,31 @@
 #include <stdlib.h>
 
 typedef struct {
-  double val[4]; // Four element vector of doubles
+  double val[4];
 } Point;
 
 typedef struct {
   int zBuffer; // Whether to use the z-buffer, should default to true (1)
-  Point a;     // Starting point
-  Point b;     // Ending point
+  Point a;
+  Point b;
 } Line;
 
 typedef struct {
-  double r; // Radius
-  Point c;  // Center
+  double r;
+  Point c;
 } Circle;
 
 typedef struct {
-  double ra; // Major axis radius
-  double rb; // Minor axis radius
-  Point c;   // Center
-  double a;  // Angle of major axis relative to the X-axis (optional)
+  double ra;
+  double rb;
+  Point c;
+  double a; // Angle of major axis relative to the X-axis
 } Ellipse;
 
 typedef struct {
-  int zBuffer;   // Whether to use the z-buffer; should default to true (1)
-  int numVertex; // Number of vertices
-  Point *vertex; // Vertex information
+  int zBuffer;
+  int numVertex;
+  Point *vertex;
 } Polyline;
 
 void point_set2D(Point *p, double x, double y) {
@@ -325,6 +325,125 @@ void ellipse_drawFill(Ellipse *e, Image *src, FPixel p) {
       y--;
       dyt += d2yt;
       t += dyt;
+    }
+  }
+}
+
+Polyline *polyline_create() {
+  Polyline *p = (Polyline *)malloc(sizeof(Polyline));
+  if (!p)
+    return NULL;
+  p->zBuffer = 1;
+  p->numVertex = 0;
+  p->vertex = NULL;
+  return p;
+}
+
+Polyline *polyline_createp(int numV, Point *vlist) {
+  Polyline *p = (Polyline *)malloc(sizeof(Polyline));
+  if (!p)
+    return NULL;
+  p->zBuffer = 1;
+  p->numVertex = numV;
+  p->vertex = (Point *)malloc(numV * sizeof(Point));
+  if (!p->vertex) {
+    free(p);
+    return NULL;
+  }
+  memcpy(p->vertex, vlist, numV * sizeof(Point));
+  return p;
+}
+
+void polyline_free(Polyline *p) {
+  if (p) {
+    if (p->vertex) {
+      free(p->vertex);
+    }
+    free(p);
+  }
+}
+
+void polyline_init(Polyline *p) {
+  if (p) {
+    p->zBuffer = 1;
+    p->numVertex = 0;
+    p->vertex = NULL;
+  }
+}
+
+void polyline_set(Polyline *p, int numV, Point *vlist) {
+  if (p) {
+    if (p->vertex) {
+      free(p->vertex);
+    }
+    p->numVertex = numV;
+    p->vertex = (Point *)malloc(numV * sizeof(Point));
+    if (!p->vertex) {
+      p->numVertex = 0;
+      return;
+    }
+    memcpy(p->vertex, vlist, numV * sizeof(Point));
+  }
+}
+
+void polyline_clear(Polyline *p) {
+  if (p) {
+    if (p->vertex) {
+      free(p->vertex);
+      p->vertex = NULL;
+    }
+    p->numVertex = 0;
+  }
+}
+
+void polyline_zBuffer(Polyline *p, int flag) {
+  if (p) {
+    p->zBuffer = flag;
+  }
+}
+
+void polyline_copy(Polyline *to, Polyline *from) {
+  if (to && from) {
+    if (to->vertex) {
+      free(to->vertex);
+    }
+    to->numVertex = from->numVertex;
+    to->vertex = (Point *)malloc(from->numVertex * sizeof(Point));
+    if (!to->vertex) {
+      to->numVertex = 0;
+      return;
+    }
+    memcpy(to->vertex, from->vertex, from->numVertex * sizeof(Point));
+    to->zBuffer = from->zBuffer;
+  }
+}
+
+void polyline_print(Polyline *p, FILE *fp) {
+  if (p && fp) {
+    fprintf(fp, "Polyline: numVertex = %d, zBuffer = %d\n", p->numVertex,
+            p->zBuffer);
+    for (int i = 0; i < p->numVertex; i++) {
+      fprintf(fp, "Vertex %d: (%f, %f, %f, %f)\n", i, p->vertex[i].val[0],
+              p->vertex[i].val[1], p->vertex[i].val[2], p->vertex[i].val[3]);
+    }
+  }
+}
+
+void polyline_normalize(Polyline *p) {
+  if (p && p->vertex) {
+    for (int i = 0; i < p->numVertex; i++) {
+      point_normalize(&(p->vertex[i]));
+    }
+  }
+}
+
+void polyline_draw(Polyline *p, Image *src, FPixel c) {
+  if (p && p->vertex && p->numVertex > 1) {
+    for (int i = 0; i < p->numVertex - 1; i++) {
+      Line l;
+      line_set(&l, p->vertex[i], p->vertex[i + 1]);
+      line_zBuffer(&l, p->zBuffer);
+      line_draw(&l, src, c);
     }
   }
 }
