@@ -146,78 +146,185 @@ void line_draw(Line *l, Image *src, FPixel c) {
 }
 
 void circle_set(Circle *c, Point tc, double tr) {
-    point_copy(&(c->c), &tc);
-    c->r = tr;
+  point_copy(&(c->c), &tc);
+  c->r = tr;
 }
 
 void circle_draw(Circle *c, Image *src, FPixel p) {
-    // using midpoint circle algorithm
-    int x0 = (int)c->c.val[0];
-    int y0 = (int)c->c.val[1];
-    int radius = (int)c->r;
-    
-    int x = radius;
-    int y = 0;
-    int radiusError = 1 - x;
-    
-    while (x >= y) {
-        if (x0 + x >= 0 && x0 + x < src->cols && y0 + y >= 0 && y0 + y < src->rows)
-            src->data[y0 + y][x0 + x] = p;
-        if (x0 - x >= 0 && x0 - x < src->cols && y0 + y >= 0 && y0 + y < src->rows)
-            src->data[y0 + y][x0 - x] = p;
-        if (x0 + x >= 0 && x0 + x < src->cols && y0 - y >= 0 && y0 - y < src->rows)
-            src->data[y0 - y][x0 + x] = p;
-        if (x0 - x >= 0 && x0 - x < src->cols && y0 - y >= 0 && y0 - y < src->rows)
-            src->data[y0 - y][x0 - x] = p;
-        if (x0 + y >= 0 && x0 + y < src->cols && y0 + x >= 0 && y0 + x < src->rows)
-            src->data[y0 + x][x0 + y] = p;
-        if (x0 - y >= 0 && x0 - y < src->cols && y0 + x >= 0 && y0 + x < src->rows)
-            src->data[y0 + x][x0 - y] = p;
-        if (x0 + y >= 0 && x0 + y < src->cols && y0 - x >= 0 && y0 - x < src->rows)
-            src->data[y0 - x][x0 + y] = p;
-        if (x0 - y >= 0 && x0 - y < src->cols && y0 - x >= 0 && y0 - x < src->rows)
-            src->data[y0 - x][x0 - y] = p;
+  // using midpoint circle algorithm
+  int x0 = (int)c->c.val[0];
+  int y0 = (int)c->c.val[1];
+  int radius = (int)c->r;
 
-        y++;
-        if (radiusError < 0) {
-            radiusError += 2 * y + 1;
-        } else {
-            x--;
-            radiusError += 2 * (y - x + 1);
-        }
+  int x = radius;
+  int y = 0;
+  int radiusError = 1 - x;
+
+  while (x >= y) {
+    if (x0 + x >= 0 && x0 + x < src->cols && y0 + y >= 0 && y0 + y < src->rows)
+      src->data[y0 + y][x0 + x] = p;
+    if (x0 - x >= 0 && x0 - x < src->cols && y0 + y >= 0 && y0 + y < src->rows)
+      src->data[y0 + y][x0 - x] = p;
+    if (x0 + x >= 0 && x0 + x < src->cols && y0 - y >= 0 && y0 - y < src->rows)
+      src->data[y0 - y][x0 + x] = p;
+    if (x0 - x >= 0 && x0 - x < src->cols && y0 - y >= 0 && y0 - y < src->rows)
+      src->data[y0 - y][x0 - x] = p;
+    if (x0 + y >= 0 && x0 + y < src->cols && y0 + x >= 0 && y0 + x < src->rows)
+      src->data[y0 + x][x0 + y] = p;
+    if (x0 - y >= 0 && x0 - y < src->cols && y0 + x >= 0 && y0 + x < src->rows)
+      src->data[y0 + x][x0 - y] = p;
+    if (x0 + y >= 0 && x0 + y < src->cols && y0 - x >= 0 && y0 - x < src->rows)
+      src->data[y0 - x][x0 + y] = p;
+    if (x0 - y >= 0 && x0 - y < src->cols && y0 - x >= 0 && y0 - x < src->rows)
+      src->data[y0 - x][x0 - y] = p;
+
+    y++;
+    if (radiusError < 0) {
+      radiusError += 2 * y + 1;
+    } else {
+      x--;
+      radiusError += 2 * (y - x + 1);
     }
+  }
 }
 
 void circle_drawFill(Circle *c, Image *src, FPixel p) {
-    // using midpoint circle algorithm
-    int x0 = (int)c->c.val[0];
-    int y0 = (int)c->c.val[1];
-    int radius = (int)c->r;
-    
-    int x = radius;
-    int y = 0;
-    int radiusError = 1 - x;
-    
-    while (x >= y) {
-        for (int i = -x; i <= x; i++) {
-            if (x0 + i >= 0 && x0 + i < src->cols && y0 + y >= 0 && y0 + y < src->rows)
-                src->data[y0 + y][x0 + i] = p;
-            if (x0 + i >= 0 && x0 + i < src->cols && y0 - y >= 0 && y0 - y < src->rows)
-                src->data[y0 - y][x0 + i] = p;
-        }
-        for (int i = -y; i <= y; i++) {
-            if (x0 + i >= 0 && x0 + i < src->cols && y0 + x >= 0 && y0 + x < src->rows)
-                src->data[y0 + x][x0 + i] = p;
-            if (x0 + i >= 0 && x0 + i < src->cols && y0 - x >= 0 && y0 - x < src->rows)
-                src->data[y0 - x][x0 + i] = p;
-        }
+  // using midpoint circle algorithm
+  int x0 = (int)c->c.val[0];
+  int y0 = (int)c->c.val[1];
+  int radius = (int)c->r;
 
-        y++;
-        if (radiusError < 0) {
-            radiusError += 2 * y + 1;
-        } else {
-            x--;
-            radiusError += 2 * (y - x + 1);
-        }
+  int x = radius;
+  int y = 0;
+  int radiusError = 1 - x;
+
+  while (x >= y) {
+    for (int i = -x; i <= x; i++) {
+      if (x0 + i >= 0 && x0 + i < src->cols && y0 + y >= 0 &&
+          y0 + y < src->rows)
+        src->data[y0 + y][x0 + i] = p;
+      if (x0 + i >= 0 && x0 + i < src->cols && y0 - y >= 0 &&
+          y0 - y < src->rows)
+        src->data[y0 - y][x0 + i] = p;
     }
+    for (int i = -y; i <= y; i++) {
+      if (x0 + i >= 0 && x0 + i < src->cols && y0 + x >= 0 &&
+          y0 + x < src->rows)
+        src->data[y0 + x][x0 + i] = p;
+      if (x0 + i >= 0 && x0 + i < src->cols && y0 - x >= 0 &&
+          y0 - x < src->rows)
+        src->data[y0 - x][x0 + i] = p;
+    }
+
+    y++;
+    if (radiusError < 0) {
+      radiusError += 2 * y + 1;
+    } else {
+      x--;
+      radiusError += 2 * (y - x + 1);
+    }
+  }
+}
+
+void ellipse_set(Ellipse *e, Point tc, double ta, double tb) {
+  point_copy(&(e->c), &tc);
+  e->ra = ta;
+  e->rb = tb;
+  e->a = 0.0;
+}
+
+void ellipse_draw(Ellipse *e, Image *src, FPixel p) {
+  // use midpoint ellipse algorithm
+  int xc = (int)e->c.val[0];
+  int yc = (int)e->c.val[1];
+  int a = (int)e->ra;
+  int b = (int)e->rb;
+
+  int x = 0;
+  int y = b;
+  double a2 = a * a;
+  double b2 = b * b;
+  double crit1 = -(a2 / 4 + a % 2 + b2);
+  double crit2 = -(b2 / 4 + b % 2 + a2);
+  double crit3 = -(b2 / 4 + b % 2);
+  double t = -a2 * y;
+  double dxt = 2 * b2 * x;
+  double dyt = -2 * a2 * y;
+  double d2xt = 2 * b2;
+  double d2yt = 2 * a2;
+
+  while (y >= 0 && x <= a) {
+    if (xc + x >= 0 && xc + x < src->cols && yc + y >= 0 && yc + y < src->rows)
+      src->data[yc + y][xc + x] = p;
+    if (xc - x >= 0 && xc - x < src->cols && yc + y >= 0 && yc + y < src->rows)
+      src->data[yc + y][xc - x] = p;
+    if (xc + x >= 0 && xc + x < src->cols && yc - y >= 0 && yc - y < src->rows)
+      src->data[yc - y][xc + x] = p;
+    if (xc - x >= 0 && xc - x < src->cols && yc - y >= 0 && yc - y < src->rows)
+      src->data[yc - y][xc - x] = p;
+
+    if (t + b2 * x <= crit1 || t + a2 * y <= crit3) {
+      x++;
+      dxt += d2xt;
+      t += dxt;
+    } else if (t - a2 * y > crit2) {
+      y--;
+      dyt += d2yt;
+      t += dyt;
+    } else {
+      x++;
+      dxt += d2xt;
+      t += dxt;
+      y--;
+      dyt += d2yt;
+      t += dyt;
+    }
+  }
+}
+
+void ellipse_drawFill(Ellipse *e, Image *src, FPixel p) {
+  // use midpoint ellipse algorithm
+  int xc = (int)e->c.val[0];
+  int yc = (int)e->c.val[1];
+  int a = (int)e->ra;
+  int b = (int)e->rb;
+
+  int x = 0;
+  int y = b;
+  double a2 = a * a;
+  double b2 = b * b;
+  double crit1 = -(a2 / 4 + a % 2 + b2);
+  double crit2 = -(b2 / 4 + b % 2 + a2);
+  double crit3 = -(b2 / 4 + b % 2);
+  double t = -a2 * y;
+  double dxt = 2 * b2 * x;
+  double dyt = -2 * a2 * y;
+  double d2xt = 2 * b2;
+  double d2yt = 2 * a2;
+
+  while (y >= 0 && x <= a) {
+    for (int i = xc - x; i <= xc + x; i++) {
+      if (i >= 0 && i < src->cols && yc + y >= 0 && yc + y < src->rows)
+        src->data[yc + y][i] = p;
+      if (i >= 0 && i < src->cols && yc - y >= 0 && yc - y < src->rows)
+        src->data[yc - y][i] = p;
+    }
+
+    if (t + b2 * x <= crit1 || t + a2 * y <= crit3) {
+      x++;
+      dxt += d2xt;
+      t += dxt;
+    } else if (t - a2 * y > crit2) {
+      y--;
+      dyt += d2yt;
+      t += dyt;
+    } else {
+      x++;
+      dxt += d2xt;
+      t += dxt;
+      y--;
+      dyt += d2yt;
+      t += dyt;
+    }
+  }
 }
