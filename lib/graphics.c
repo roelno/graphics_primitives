@@ -144,3 +144,80 @@ void line_draw(Line *l, Image *src, FPixel c) {
     }
   }
 }
+
+void circle_set(Circle *c, Point tc, double tr) {
+    point_copy(&(c->c), &tc);
+    c->r = tr;
+}
+
+void circle_draw(Circle *c, Image *src, FPixel p) {
+    // using midpoint circle algorithm
+    int x0 = (int)c->c.val[0];
+    int y0 = (int)c->c.val[1];
+    int radius = (int)c->r;
+    
+    int x = radius;
+    int y = 0;
+    int radiusError = 1 - x;
+    
+    while (x >= y) {
+        if (x0 + x >= 0 && x0 + x < src->cols && y0 + y >= 0 && y0 + y < src->rows)
+            src->data[y0 + y][x0 + x] = p;
+        if (x0 - x >= 0 && x0 - x < src->cols && y0 + y >= 0 && y0 + y < src->rows)
+            src->data[y0 + y][x0 - x] = p;
+        if (x0 + x >= 0 && x0 + x < src->cols && y0 - y >= 0 && y0 - y < src->rows)
+            src->data[y0 - y][x0 + x] = p;
+        if (x0 - x >= 0 && x0 - x < src->cols && y0 - y >= 0 && y0 - y < src->rows)
+            src->data[y0 - y][x0 - x] = p;
+        if (x0 + y >= 0 && x0 + y < src->cols && y0 + x >= 0 && y0 + x < src->rows)
+            src->data[y0 + x][x0 + y] = p;
+        if (x0 - y >= 0 && x0 - y < src->cols && y0 + x >= 0 && y0 + x < src->rows)
+            src->data[y0 + x][x0 - y] = p;
+        if (x0 + y >= 0 && x0 + y < src->cols && y0 - x >= 0 && y0 - x < src->rows)
+            src->data[y0 - x][x0 + y] = p;
+        if (x0 - y >= 0 && x0 - y < src->cols && y0 - x >= 0 && y0 - x < src->rows)
+            src->data[y0 - x][x0 - y] = p;
+
+        y++;
+        if (radiusError < 0) {
+            radiusError += 2 * y + 1;
+        } else {
+            x--;
+            radiusError += 2 * (y - x + 1);
+        }
+    }
+}
+
+void circle_drawFill(Circle *c, Image *src, FPixel p) {
+    // using midpoint circle algorithm
+    int x0 = (int)c->c.val[0];
+    int y0 = (int)c->c.val[1];
+    int radius = (int)c->r;
+    
+    int x = radius;
+    int y = 0;
+    int radiusError = 1 - x;
+    
+    while (x >= y) {
+        for (int i = -x; i <= x; i++) {
+            if (x0 + i >= 0 && x0 + i < src->cols && y0 + y >= 0 && y0 + y < src->rows)
+                src->data[y0 + y][x0 + i] = p;
+            if (x0 + i >= 0 && x0 + i < src->cols && y0 - y >= 0 && y0 - y < src->rows)
+                src->data[y0 - y][x0 + i] = p;
+        }
+        for (int i = -y; i <= y; i++) {
+            if (x0 + i >= 0 && x0 + i < src->cols && y0 + x >= 0 && y0 + x < src->rows)
+                src->data[y0 + x][x0 + i] = p;
+            if (x0 + i >= 0 && x0 + i < src->cols && y0 - x >= 0 && y0 - x < src->rows)
+                src->data[y0 - x][x0 + i] = p;
+        }
+
+        y++;
+        if (radiusError < 0) {
+            radiusError += 2 * y + 1;
+        } else {
+            x--;
+            radiusError += 2 * (y - x + 1);
+        }
+    }
+}
