@@ -24,13 +24,13 @@ LIBDIR = .
 BINDIR = ../bin
 
 # put all of the relevant include files here
-_DEPS = image.h fractals.h
+_DEPS = ppmIO.h image.h graphics.h
 
 # convert them to point to the right place
 DEPS = $(patsubst %,$(INCDIR)/%,$(_DEPS))
 
 # put a list of all the object files (with .o endings)
-_COMMON = image.o fractals.o
+_COMMON = ppmIO.o image.o graphics.o
 
 # convert them to point to the right place
 COMMON = $(patsubst %,$(ODIR)/%,$(_COMMON))
@@ -46,7 +46,7 @@ $(ODIR)/%.o: %.cpp $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 # output library
-OUTPUT_LIB = libimage.a
+OUTPUT_LIB = libgraphics.a
 
 # make rules
 all: $(OUTPUT_LIB)

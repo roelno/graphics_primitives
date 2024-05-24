@@ -1,34 +1,8 @@
-#include "image.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include "graphics.h"
 
-typedef struct {
-  double val[4];
-} Point;
-
-typedef struct {
-  int zBuffer; // Whether to use the z-buffer, should default to true (1)
-  Point a;
-  Point b;
-} Line;
-
-typedef struct {
-  double r;
-  Point c;
-} Circle;
-
-typedef struct {
-  double ra;
-  double rb;
-  Point c;
-  double a; // Angle of major axis relative to the X-axis
-} Ellipse;
-
-typedef struct {
-  int zBuffer;
-  int numVertex;
-  Point *vertex;
-} Polyline;
 
 void point_set2D(Point *p, double x, double y) {
   p->val[0] = x;
@@ -107,9 +81,9 @@ void line_copy(Line *to, Line *from) {
 
 void line_draw(Line *l, Image *src, FPixel c) {
   int x0 = (int)l->a.val[0];
-  int y0 = (int)l->a.val[1];
+  int y0 = src->rows - 1 - (int)l->a.val[1];
   int x1 = (int)l->b.val[0];
-  int y1 = (int)l->b.val[1];
+  int y1 = src->rows - 1 - (int)l->b.val[1];
 
   int dx = abs(x1 - x0);
   int dy = abs(y1 - y0);
@@ -329,7 +303,7 @@ void ellipse_drawFill(Ellipse *e, Image *src, FPixel p) {
   }
 }
 
-Polyline *polyline_create() {
+Polyline *polyline_create(void) {
   Polyline *p = (Polyline *)malloc(sizeof(Polyline));
   if (!p)
     return NULL;
