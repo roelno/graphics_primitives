@@ -22,20 +22,20 @@ LIBDIR =../lib
 BINDIR =../bin
 
 # libraries to include
-LIBS = -lm -limage
+LIBS = -lm -lgraphics
 LFLAGS = -L$(LIBDIR) -L/opt/local/lib
 
 # put all of the relevant include files here
-_DEPS = image.h fractals.h
+_DEPS = ppmIO.h image.h graphics.h
 
 # convert them to point to the right place
 DEPS = $(patsubst %,$(INCDIR)/%,$(_DEPS))
 
 # put a list of the executables here
-EXECUTABLES = Imagetest mandeltest mandeltest_color
+EXECUTABLES = testbench test3d
 
 # put a list of all the object files here for all executables (with .o endings)
-_OBJ = Imagetest.o mandeltest.o mandeltest_color.o
+_OBJ = testbench.o test3d.o
 
 # convert them to point to the right place
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
@@ -57,11 +57,9 @@ all:
 
 
 # put the specific executable rules here
-Imagetest: $(ODIR)/Imagetest.o
+testbench: $(ODIR)/testbench.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
-mandeltest: $(ODIR)/mandeltest.o
-	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
-mandeltest_color: $(ODIR)/mandeltest_color.o
+test3d: $(ODIR)/test3d.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
 .PHONY: clean

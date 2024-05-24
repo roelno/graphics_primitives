@@ -1,6 +1,4 @@
 #include "graphics.h"
-#include "line.h"
-#include "point.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

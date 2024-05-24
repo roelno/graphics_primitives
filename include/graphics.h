@@ -2,6 +2,7 @@
 #define GRAPHICS_H
 
 #include "point.h"
+#include "line.h"
 #include "image.h"
 #include <stdio.h>
 
