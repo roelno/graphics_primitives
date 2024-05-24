@@ -1,39 +1,10 @@
 #ifndef GRAPHICS_H
 #define GRAPHICS_H
 
-#include "image.h" // Include the image.h header file
+#include "point.h"
+#include "image.h"
 #include <stdio.h>
 
-/**
- * @brief Structure representing a point in space.
- */
-typedef struct {
-  double val[4];
-} Point;
-
-void point_set2D(Point *p, double x, double y);
-void point_set3D(Point *p, double x, double y, double z);
-void point_set(Point *p, double x, double y, double z, double h);
-void point_normalize(Point *p);
-void point_copy(Point *to, Point *from);
-void point_drawf(Point *p, Image *src, FPixel c);
-void point_print(Point *p, FILE *fp);
-
-/**
- * @brief Structure representing a line.
- */
-typedef struct {
-  int zBuffer; // Whether to use the z-buffer, should default to true (1)
-  Point a;
-  Point b;
-} Line;
-
-void line_set2D(Line *l, double x0, double y0, double x1, double y1);
-void line_set(Line *l, Point ta, Point tb);
-void line_zBuffer(Line *l, int flag);
-void line_normalize(Line *l);
-void line_copy(Line *to, Line *from);
-void line_draw(Line *l, Image *src, FPixel c);
 
 /**
  * @brief Structure representing a circle.
