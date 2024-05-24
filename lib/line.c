@@ -30,9 +30,9 @@ void line_copy(Line *to, Line *from) {
 
 void line_draw(Line *l, Image *src, Color c) {
   int x0 = (int)l->a.val[0];
-  int y0 = src->rows - 1 - (int)l->a.val[1];
+  int y0 = (int)l->a.val[1];
   int x1 = (int)l->b.val[0];
-  int y1 = src->rows - 1 - (int)l->b.val[1];
+  int y1 = (int)l->b.val[1];
 
   int dx = abs(x1 - x0);
   int dy = abs(y1 - y0);

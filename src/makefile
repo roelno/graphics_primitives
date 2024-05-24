@@ -32,10 +32,10 @@ _DEPS = ppmIO.h image.h graphics.h
 DEPS = $(patsubst %,$(INCDIR)/%,$(_DEPS))
 
 # put a list of the executables here
-EXECUTABLES = testbench test3d
+EXECUTABLES = testbench test3d test3a test3b test3c
 
 # put a list of all the object files here for all executables (with .o endings)
-_OBJ = testbench.o test3d.o
+_OBJ = testbench.o test3d.o test3a.o test3b.o test3c.o
 
 # convert them to point to the right place
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
@@ -60,6 +60,12 @@ all:
 testbench: $(ODIR)/testbench.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 test3d: $(ODIR)/test3d.o
+	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
+test3a: $(ODIR)/test3a.o
+	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
+test3b: $(ODIR)/test3b.o
+	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
+test3c: $(ODIR)/test3c.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
 .PHONY: clean
