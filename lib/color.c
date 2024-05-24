@@ -1,4 +1,5 @@
 #include "color.h"
+#include <stdlib.h>
 
 void color_copy(Color *to, Color *from) {
     if (to != NULL && from != NULL) {

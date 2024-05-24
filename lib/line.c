@@ -1,4 +1,5 @@
 #include "line.h"
+#include "image.h"
 #include <math.h>
 #include <stdlib.h>
 
@@ -27,7 +28,7 @@ void line_copy(Line *to, Line *from) {
   to->zBuffer = from->zBuffer;
 }
 
-void line_draw(Line *l, Image *src, FPixel c) {
+void line_draw(Line *l, Image *src, Color c) {
   int x0 = (int)l->a.val[0];
   int y0 = src->rows - 1 - (int)l->a.val[1];
   int x1 = (int)l->b.val[0];
@@ -41,10 +42,17 @@ void line_draw(Line *l, Image *src, FPixel c) {
 
   while (1) {
     if (x0 >= 0 && x0 < src->cols && y0 >= 0 && y0 < src->rows) {
-      src->data[y0][x0] = c;
+      FPixel pixel;
+      pixel.rgb[0] = c.c[0];
+      pixel.rgb[1] = c.c[1];
+      pixel.rgb[2] = c.c[2];
+      pixel.a = 1.0; // Assuming full opacity for simplicity
+      pixel.z = 0.0; // Assuming default depth for simplicity
+      src->data[y0][x0] = pixel;
     }
 
-    if (x0 == x1 && y0 == y1) break;
+    if (x0 == x1 && y0 == y1)
+      break;
     int e2 = err * 2;
     if (e2 > -dy) {
       err -= dy;
