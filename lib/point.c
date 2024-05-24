@@ -1,7 +1,6 @@
 #include "point.h"
 
 
-
 void point_set2D(Point *p, double x, double y) {
   p->val[0] = x;
   p->val[1] = y;
@@ -36,15 +35,30 @@ void point_copy(Point *to, Point *from) {
   }
 }
 
-void point_drawf(Point *p, Image *src, FPixel c) {
-  int x = (int)p->val[0];
-  int y = (int)p->val[1];
+void point_draw(Point *p, Image *src, Color c) {
+    point_normalize(p);
 
-  if (x >= 0 && x < src->cols && y >= 0 && y < src->rows) {
-    src->data[y][x] = c;
-  } else {
-    fprintf(stderr, "Point out of bounds: (%d, %d)\n", x, y);
-  }
+    int x = (int)p->val[0];
+    int y = (int)p->val[1];
+
+    if (x >= 0 && x < src->cols && y >= 0 && y < src->rows) {
+        image_setColor(src, x, y, c);
+    } else {
+        fprintf(stderr, "Point out of bounds: (%d, %d)\n", x, y);
+    }
+}
+
+void point_drawf(Point *p, Image *src, FPixel c) {
+    point_normalize(p);
+
+    int x = (int)p->val[0];
+    int y = (int)p->val[1];
+
+    if (x >= 0 && x < src->cols && y >= 0 && y < src->rows) {
+        src->data[y][x] = c;
+    } else {
+        fprintf(stderr, "Point out of bounds: (%d, %d)\n", x, y);
+    }
 }
 
 void point_print(Point *p, FILE *fp) {
