@@ -1,4 +1,6 @@
 #include "line.h"
+#include <math.h>
+#include <stdlib.h>
 
 void line_set2D(Line *l, double x0, double y0, double x1, double y1) {
   point_set2D(&(l->a), x0, y0);

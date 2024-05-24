@@ -2,6 +2,7 @@
 #define LINE_H
 
 #include "point.h"
+#include "color.h"
 #include "image.h"
 
 /**
