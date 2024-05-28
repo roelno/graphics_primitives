@@ -71,52 +71,49 @@ void ellipse_draw(Ellipse *e, Image *src, Color p) {
   int ra = (int)e->ra;
   int rb = (int)e->rb;
 
-  int x = 0;
-  int y = rb;
+  int x = ra;
+  int y = 0;
   int ra2 = ra * ra;
   int rb2 = rb * rb;
-  int err = rb2 - (2 * rb - 1) * ra2;
-  int stop_x = 2 * rb2 * ra;
-  int stop_y = 0;
+  int err = ra2 - ra * rb2 + rb2 / 4;
 
-  while (stop_x >= stop_y) {
+  // Region 1
+  while (ra2 * y <= rb2 * x) {
     draw_pixel(src, x0 + x, y0 + y, p);
     draw_pixel(src, x0 - x, y0 + y, p);
     draw_pixel(src, x0 - x, y0 - y, p);
     draw_pixel(src, x0 + x, y0 - y, p);
 
-    y -= 1;
-    stop_y += 2 * ra2;
-    err += ra2;
-    if (err >= 0) {
-      x += 1;
-      stop_x -= 2 * rb2;
-      err -= stop_x;
+    y++;
+    if (err <= 0) {
+      err += 2 * y * ra2 + ra2;
+    } else {
+      x--;
+      err += 2 * y * ra2 - 2 * x * rb2 + ra2;
     }
   }
 
-  x = ra;
-  y = 0;
-  err = ra2 - (2 * ra - 1) * rb2;
-  stop_x = 0;
-  stop_y = 2 * ra2 * rb;
+  // Region 2
+  x = 0;
+  y = rb;
+  err = rb2 - rb * ra2 + ra2 / 4;
 
-  while (stop_x <= stop_y) {
+  while (rb2 * x <= ra2 * y) {
     draw_pixel(src, x0 + x, y0 + y, p);
     draw_pixel(src, x0 - x, y0 + y, p);
     draw_pixel(src, x0 - x, y0 - y, p);
     draw_pixel(src, x0 + x, y0 - y, p);
 
-    x -= 1;
-    stop_x += 2 * rb2;
-    err += rb2;
-    if (err >= 0) {
-      y += 1;
-      stop_y -= 2 * ra2;
-      err -= stop_y;
+    x++;
+    if (err <= 0) {
+      err += 2 * x * rb2 + rb2;
+    } else {
+      y--;
+      err += 2 * x * rb2 - 2 * y * ra2 + rb2;
     }
   }
 }
+
 
 void ellipse_drawFill(Ellipse *e, Image *src, Color p) {
   int x0 = (int)e->c.val[0];
