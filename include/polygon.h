@@ -102,9 +102,9 @@ void polygon_draw(Polygon *p, Image *src, Color c);
  */
 void polygon_drawFill(Polygon *p, Image *src, Color c);
 
-// /**
-//  * @brief draw the filled polygon using color c with the Barycentric coordinates algorithm.
-//  */
-// void polygon_drawFillB(Polygon *p, Image *src, Color c);
+/**
+ * @brief draw the filled polygon using color c with the Barycentric coordinates algorithm.
+ */
+void polygon_drawFillB(Polygon *p, Image *src, Color c);
 
 #endif // POLYGON_H
