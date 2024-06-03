@@ -136,6 +136,3 @@ void polygon_draw(Polygon *p, Image *src, Color c) {
     line_set(&l, p->vertex[p->nVertex - 1], p->vertex[0]);
     line_draw(&l, src, c);
 }
-
-void polygon_drawFill(Polygon *p, Image *src, Color c) {
-}
